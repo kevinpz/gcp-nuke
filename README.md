@@ -45,10 +45,10 @@ optional arguments:
 
 ### Script parameters
 
-| Name          | Type   | Required | Description          | Example                           |
-|:--------------|:-------|:---------|:---------------------|:----------------------------------|
-| `--log-level` | string | no       | Script logging level | DEBUG,INFO,WARNING,ERROR,CRITICAL |
-| `--project-id`  | string | yes      | GCP Project ID       | my-awesome-project-1              |
+| Name           | Type   | Required | Description          | Example                           |
+|:---------------|:-------|:---------|:---------------------|:----------------------------------|
+| `--log-level`  | string | no       | Script logging level | DEBUG,INFO,WARNING,ERROR,CRITICAL |
+| `--project-id` | string | yes      | GCP Project ID       | my-awesome-project-1              |
 
 ### Script example
 
