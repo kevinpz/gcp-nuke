@@ -76,8 +76,11 @@ class GCPCleaner:
         Delete all the buckets
         """
         logging.info("Deleting Google Storage buckets")
+        # Init storage client
         storage_client = storage.Client()
+        # Get the list of all buckets
         bucket_list = storage_client.list_buckets()
+        # Delete each bucket
         for bucket in bucket_list:
             logging.info(f"[Storage] Deleting bucket {bucket.name}")
             if not self.dry_run:
