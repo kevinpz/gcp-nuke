@@ -1,7 +1,7 @@
 # gcp-nuke
 > Nuke your entire GCP project with a Python script.
 
-❌❌❌ DO NOT USE THIS SCRIPT IN A PRODUCTION ACCOUNT. IT WILL DESTROY EVERYTHING. USE IT AT YOUR OWN RISK. ❌❌❌
+❌ **DO NOT USE THIS SCRIPT IN A PRODUCTION ACCOUNT. IT WILL DESTROY EVERYTHING. USE IT AT YOUR OWN RISK.**
 
 ## Supported services
 Right now, the following services are supported:
@@ -58,7 +58,7 @@ python3 gcp_nuke.py --project-id my-awesome-project-1
 
 ### Script output
 
-```bash
+```
 [2020-08-02 17:32:41,668] - [INFO] - Checking auth for Project ID = my-awesome-project-1
 [2020-08-02 17:32:43,702] - [INFO] - Auth successfully validated
 [2020-08-02 17:32:43,702] - [CRITICAL] - /!\ Everything will be deleted in the Project ID = my-awesome-project-1!
