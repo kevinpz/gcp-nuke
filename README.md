@@ -5,12 +5,12 @@
 
 ## Supported services
 Right now, the following services are supported:
-* Cloud Storage
+* `Cloud Storage`
 
 ## Script usage
 
 ### Requirements
-This script require at least `Python 3.6`.
+This script requires at least `Python 3.6`.
 
 To install the script dependencies, run:
 ```bash
