@@ -28,6 +28,9 @@ class GCPCleaner:
         self._validate_deletion()
 
     def _validate_deletion(self):
+        """
+        Just to be sure we want to delete everything
+        """
         # Check if we're in dry run mode
         if self.dry_run:
             logging.info("Dry run mode, nothing will be deleted")
