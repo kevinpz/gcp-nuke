@@ -32,6 +32,12 @@ def get_arguments():
                         help='Dry run mode'
                         )
 
+    parser.add_argument('-y', '--yes',
+                        action='store_true',
+                        required=False,
+                        help='Always answer yes'
+                        )
+
     args = parser.parse_args()
 
     return args

@@ -6,6 +6,7 @@
 ## Supported services
 Right now, the following services are supported:
 * `Cloud Storage`
+* `Compute Engine Instance`
 
 ## Script usage
 
