@@ -24,7 +24,7 @@ class GCPCleaner:
         """
         self.dry_run = dry_run
         self.project_id = project_id
-        # self._check_auth()
+        self._check_auth()
         if not assume_yes:
             self._validate_deletion()
 
@@ -38,7 +38,7 @@ class GCPCleaner:
         else:
             # Otherwise be sure the user want to delete everything in the project
             logging.critical(
-                f"/!\ Everything will be deleted in the Project ID = {self.project_id}!\n"  # pylint: disable=anomalous-backslash-in-string
+                f"/!\ Everything will be deleted in the Project ID = {self.project_id}!\n"
                 f"Are you sure? (yes/no)")
             answer = input()
             valid_answer = ["yes", "y"]
@@ -59,7 +59,7 @@ class GCPCleaner:
         try:
             storage_client = storage.Client()
             list(storage_client.list_buckets())
-        except:  # pylint: disable=bare-except
+        except:
             logging.error("Invalid auth provided")
             sys.exit(1)
 
@@ -71,8 +71,10 @@ class GCPCleaner:
         """
         # Clean all ressources
         logging.info("Deleting all GCP resources")
-        # self.delete_storage()
-        self.delete_compute_instance()
+        #self.delete_storage()
+        #self.delete_compute_instance()
+        self.delete_managed_instance_group()
+        self.delete_unmanaged_instance_group()
 
     def delete_storage(self):
         """
@@ -87,7 +89,7 @@ class GCPCleaner:
         for bucket in bucket_list:
             logging.info(f"[Storage] Deleting bucket {bucket.name}")
             if not self.dry_run:
-                bucket.delete(force=True)
+                res = bucket.delete(force=True)
         logging.info("[Storage] All buckets are deleted")
 
     def delete_compute_instance(self):
@@ -98,9 +100,8 @@ class GCPCleaner:
         # Init compute client
         compute = googleapiclient.discovery.build('compute', 'v1', cache_discovery=False)
         # Get the list of instances in all the zones
-        instance_list = compute.instances().aggregatedList(project=self.project_id).execute()  # pylint: disable=no-member
+        instance_list = compute.instances().aggregatedList(project=self.project_id).execute()
         # For each zone
-        # TODO: loop over nexttoken
         for zone in instance_list['items']:
             # Check if we have instances
             if 'instances' in instance_list['items'][zone]:
@@ -111,6 +112,53 @@ class GCPCleaner:
                     zone_name = zone.split('/')[1]
                     logging.info(f"[Storage] Deleting instance {instance['name']} in zone {zone_name}")
                     if not self.dry_run:
-                        # TODO: check query result
-                        compute.instances().delete(project=self.project_id, zone=zone_name,   # pylint: disable=no-member
+                        compute.instances().delete(project=self.project_id, zone=zone_name,
                                                    instance=instance['name']).execute()
+
+    def delete_unmanaged_instance_group(self):
+        """
+        Delete the unmanaged instance group
+        """
+        logging.info("Deleting Unmanaged Instance Group")
+        # Init compute client
+        compute = googleapiclient.discovery.build('compute', 'v1', cache_discovery=False)
+        # Get the list of uig in all the zones
+        uig_list = compute.instanceGroups().aggregatedList(project=self.project_id).execute()
+        # For each zone
+        for zone in uig_list['items']:
+            # Check if we have UIG
+            if 'instanceGroups' in uig_list['items'][zone]:
+                # For each instances
+                # TODO: check uig status
+                for uig in uig_list['items'][zone]['instanceGroups']:
+                    # Get the zone name in the right format
+                    zone_name = zone.split('/')[1]
+                    logging.info(f"[Storage] Deleting UIG {uig['name']} in zone {zone_name}")
+                    if not self.dry_run:
+                        compute.instanceGroups().delete(project=self.project_id, zone=zone_name,
+                                                        instanceGroup=uig['name']).execute()
+
+    def delete_managed_instance_group(self):
+        """
+        Delete the managed instance group
+        """
+        logging.info("Deleting Managed Instance Group")
+        # Init compute client
+        compute = googleapiclient.discovery.build('compute', 'v1', cache_discovery=False)
+        # Get the list of uig in all the zones
+        mig_list = compute.instanceGroupManagers().aggregatedList(project=self.project_id).execute()
+        # For each zone
+        for zone in mig_list['items']:
+            # Check if we have UIG
+            if 'instanceGroupManagers' in mig_list['items'][zone]:
+                # For each instances
+                for mig in mig_list['items'][zone]['instanceGroupManagers']:
+                    # TODO: check instance status
+                    # Get the zone name in the right format
+                    zone_name = zone.split('/')[1]
+                    logging.info(f"[Storage] Deleting MIG {mig['name']} in zone {zone_name}")
+                    if not self.dry_run:
+                        compute.instanceGroupManagers().delete(project=self.project_id, zone=zone_name,
+                                                               instanceGroupManager=mig['name']).execute()
+
+
